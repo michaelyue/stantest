@@ -1,7 +1,7 @@
 package controllers
 
 import (
-	"bytes"
+	"encoding/json"
 	"fmt"
 	"io"
 	"net/http"
@@ -15,28 +15,18 @@ import (
 func DealwithEpisodes(c echo.Context) error {
 	c.Logger().Info("received episode processing request")
 
-	// log the raw request body
+	var request models.EpisodeRequest
 	if c.Request() != nil && c.Request().Body != nil {
 		rawBody, err := io.ReadAll(c.Request().Body)
 		if err != nil {
-			c.Logger().Errorf("failed to read request body: %s", err.Error())
-		} else {
-			c.Logger().Infof("raw request body: %s", string(rawBody))
-			// restore the body so it can be read again
-			c.Request().Body = io.NopCloser(bytes.NewBuffer(rawBody))
+			c.Logger().Errorf("failed to read request body for unmarshaling: %s", err.Error())
+			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Could not decode request: JSON parsing failed"})
 		}
-	}
 
-	// log content type
-	if c.Request() != nil {
-		contentType := c.Request().Header.Get("Content-Type")
-		c.Logger().Infof("content type: %s", contentType)
-	}
-
-	var request models.EpisodeRequest
-	if err := c.Bind(&request); err != nil {
-		c.Logger().Errorf("failed to bind request: %s", err.Error())
-		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Could not decode request: JSON parsing failed"})
+		if err := json.Unmarshal(rawBody, &request); err != nil {
+			c.Logger().Errorf("failed to unmarshal request: %s", err.Error())
+			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Could not decode request: JSON parsing failed"})
+		}
 	}
 
 	// validate request data
