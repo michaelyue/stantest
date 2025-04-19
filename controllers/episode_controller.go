@@ -27,6 +27,12 @@ func DealwithEpisodes(c echo.Context) error {
 		}
 	}
 
+	// log content type
+	if c.Request() != nil {
+		contentType := c.Request().Header.Get("Content-Type")
+		c.Logger().Infof("content type: %s", contentType)
+	}
+
 	var request models.EpisodeRequest
 	if err := c.Bind(&request); err != nil {
 		c.Logger().Errorf("failed to bind request: %s", err.Error())
