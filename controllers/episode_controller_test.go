@@ -159,7 +159,7 @@ func TestDealwithEpisodes(t *testing.T) {
 			requestBody:    `{invalid json}`,
 			expectedStatus: http.StatusBadRequest,
 			expectedCount:  0,
-			expectedError:  "Could not decode request: code=400, message=Syntax error: offset=2, error=invalid character 'i' looking for beginning of object key string, internal=invalid character 'i' looking for beginning of object key string",
+			expectedError:  "Could not decode request: JSON parsing failed",
 		},
 		{
 			name: "Empty payload array",

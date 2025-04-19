@@ -28,19 +28,21 @@ func main() {
 	e.Logger.SetHeader("${time_rfc3339} ${level} ${short_file}:${line}")
 
 	// create or open the log file
-	logFile, err := os.OpenFile("stantest.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
-	if err != nil {
-		e.Logger.Fatal("failed to open log file:", err)
-	}
-	defer logFile.Close() // ensure log file closed correctly
+	//logFile, err := os.OpenFile("stantest.log", os.O_CREATE|os.O_WRONLY|os.O_APPEND, 0644)
+	//if err != nil {
+	//	e.Logger.Fatal("failed to open log file:", err)
+	//}
+	//defer logFile.Close() // ensure log file closed correctly
 
 	// bind the logger with our log file
-	e.Logger.SetOutput(logFile)
+	// use console as default
+	//e.Logger.SetOutput(logFile)
 
 	// add some default middlewares
-	e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
-		Output: logFile,
-	}))
+	//e.Use(middleware.LoggerWithConfig(middleware.LoggerConfig{
+	//	Output: logFile,
+	//}))
+	e.Use(middleware.Logger())
 	e.Use(middleware.Recover())
 	e.Use(middleware.CORS())
 
