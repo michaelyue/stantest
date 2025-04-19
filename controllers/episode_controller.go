@@ -1,7 +1,9 @@
 package controllers
 
 import (
+	"bytes"
 	"fmt"
+	"io"
 	"net/http"
 	"net/url"
 
@@ -12,6 +14,18 @@ import (
 // deal with the episode data and returns filtered results
 func DealwithEpisodes(c echo.Context) error {
 	c.Logger().Info("received episode processing request")
+
+	// log the raw request body
+	if c.Request() != nil && c.Request().Body != nil {
+		rawBody, err := io.ReadAll(c.Request().Body)
+		if err != nil {
+			c.Logger().Errorf("failed to read request body: %s", err.Error())
+		} else {
+			c.Logger().Infof("raw request body: %s", string(rawBody))
+			// restore the body so it can be read again
+			c.Request().Body = io.NopCloser(bytes.NewBuffer(rawBody))
+		}
+	}
 
 	var request models.EpisodeRequest
 	if err := c.Bind(&request); err != nil {
