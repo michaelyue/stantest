@@ -27,6 +27,8 @@ func DealwithEpisodes(c echo.Context) error {
 			c.Logger().Errorf("failed to unmarshal request: %s", err.Error())
 			return c.JSON(http.StatusBadRequest, map[string]string{"error": "Could not decode request: JSON parsing failed"})
 		}
+	} else {
+		return c.JSON(http.StatusBadRequest, map[string]string{"error": "Could not decode request: JSON parsing failed"})
 	}
 
 	// validate request data
