@@ -49,7 +49,7 @@ func DealwithEpisodes(c echo.Context) error {
 		c.Logger().Debugf("processing episode: %s", episode.Title)
 
 		if episode.DRM && episode.EpisodeCount > 0 {
-			// Validate episode data
+			// validate episode data
 			if err := validateEpisode(episode); err != nil {
 				c.Logger().Warnf("skipping invalid episode %s: %s", episode.Title, err.Error())
 				continue
